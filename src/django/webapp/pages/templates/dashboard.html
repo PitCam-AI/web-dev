@@ -7,6 +7,7 @@
     .accordion {
         width: 90%; /* Makes it responsive */
         margin: 0; /* Centers it */
+        margin-left: 0.5rem;
     }
     .accordion-button {
         font-weight: bold;
@@ -21,9 +22,10 @@
         table-layout: auto;
     }
 </style>
-<h1>Dashboard</h1>
+    <h2 class="ps-3">Welcome, {{ name }}!</h2>
+    <p class="ps-3">From here, you can manage your cars and the races you are in.</p>
 
-
+    <div class="container">
     <!-- Displaying the uploaded image if available -->
     {% if image %}
         <h3>Uploaded Image:</h3>
@@ -39,9 +41,8 @@
         <br><br>
 
     </div>
-    <div class="container">
         <br><br>
-    <h2>My Races</h2>
+    <h3>My Races</h3>
         <!-- List of Races (Placeholder for now) -->
         <div id="raceAccordion" class="accordion mt-4">
             <!-- The list of races will be dynamically populated here -->

@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,6 +24,11 @@
 <body>
     <div class="card shadow-lg">
         <div class="card-body">
+            <div class="text-center">
+                <img src="{% static 'pages/pitcam_logo.png' %}" alt="Logo"
+                     class="mb-3 border rounded-circle"
+                     style="max-width: 110px; border-width: 2px;">
+            </div>
             <h2 class="text-center mb-4">Login</h2>
             <form id="signin-form">
                 <div class="mb-3">
