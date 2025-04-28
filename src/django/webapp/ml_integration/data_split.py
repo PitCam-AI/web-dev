@@ -49,9 +49,9 @@ def split_dataset_s3(source_bucket_name, dest_bucket_name, source_prefix, dest_p
         
         username, class_name, filename = parts[0], parts[1], '/'.join(parts[3:])  # Handle potential subdirs
         
-        print(f"Username: {username}")
-        print(f"classname: {class_name}")
-        print(f"filename: {filename}")
+        # print(f"Username: {username}")
+        # print(f"classname: {class_name}")
+        # print(f"filename: {filename}")
         
         # Skip files if the (username, class_name) pair is not in the allowed list
         if allowed_user_class_pairs and (username, class_name) not in allowed_user_class_pairs:

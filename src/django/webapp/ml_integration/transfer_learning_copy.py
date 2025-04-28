@@ -212,6 +212,8 @@ def main(owner, race_name, race_id, allowed_user_class_pairs):
         ]),
     }
 
+    print("Transformed data")
+
     global image_datasets, dataloaders, dataset_sizes, class_names, device
 
     image_datasets = {x: datasets.ImageFolder(os.path.join(data_dir, x),

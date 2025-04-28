@@ -72,6 +72,7 @@ def start_training(request):
             if not race_id or num_cars is None or not car_names:
                 return JsonResponse({"error": "Missing required data"}, status=400)
 
+            full_name = f"{request.user.name} {request.user.lastname}"
             # Run yamlGen.py
             # yaml_process = subprocess.run(
             #     ["python3", "./ml_integration/yamlGen.py"],  # Ensure correct path
@@ -83,7 +84,7 @@ def start_training(request):
             race_id=race_id,
             owner=owner,
             race_name=race_name,
-            full_name=request.user.get_full_name(),  # or wherever you get the full name
+            full_name=full_name,  # or wherever you get the full name
             car_labels=car_names
         )
 
@@ -100,6 +101,8 @@ def start_training(request):
             split_dataset_s3(src_bucket, dst_bucket, source_prefix, dst_prefix, allowed_user_class_pairs=allowed_user_class_pairs)
             
             #Run transfer_learning copy
+
+            print("Transfer Learning start")
             
             transfer_learning_copy.main(owner, race_name, race_id, allowed_user_class_pairs)
             # # Run data_split.py
