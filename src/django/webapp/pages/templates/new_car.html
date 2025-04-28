@@ -66,33 +66,29 @@ document.getElementById('newcar-form').onsubmit = async function(event) {
             }
         });
 
-        const result = await response.json();
-        let messageDiv = document.getElementById("response-message");
-        messageDiv.style.display = 'block';
-
-        if (response.ok) {
-            messageDiv.className = "alert alert-success";
-            messageDiv.innerText = "Successfully added car and images!";
-            // Optionally reset the form
-            document.getElementById('newcar-form').reset();
-        } else {
-            messageDiv.className = "alert alert-danger";
-            if (result.message) {
-                messageDiv.innerText = result.message;
-            } else if (result.detail) {
-                messageDiv.innerText = result.detail;
+            const result = await response.json();
+            let messageDiv = document.getElementById("response-message");
+            messageDiv.style.display = 'block';
+            
+            if (response.ok) {
+                messageDiv.className = "alert alert-success";
+                messageDiv.innerText = "Successfully added car and images!";
+                setTimeout(() => window.location.href = "/pages/all_cars/", 1000);
             } else {
-                messageDiv.innerText = "Failed to add car. Please try again.";
+                messageDiv.className = "alert alert-danger";
+                if (result.message) {
+                    messageDiv.innerText = result.message;
+                } else if (result.detail) { 
+                    // Handle generic DRF error messages
+                    messageDiv.innerText = result.detail;
+                } else {
+                    messageDiv.innerText = "Failed to add car. Please try again.";
+                }
+                // messageDiv.innerText = result.error || "Failed to add car.";
             }
+        } catch (error) {
+            console.error("Error:", error);
         }
-    } catch (error) {
-        console.error("Error:", error);
-    } finally {
-        submitButton.disabled = false;
-        submitButton.classList.remove('disabled');
-        submitButton.textContent = 'Submit';
-    }
-};
-
+    };
 </script>
 {% endblock %}

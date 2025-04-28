@@ -5,6 +5,7 @@ from django.http import HttpResponse, JsonResponse
 import requests
 from media.models import Video, Image
 from races.models import Car, Race
+from accounts.models import CognitoUser
 import requests
 import boto3
 from accounts.middlewares import get_cognito_user
@@ -41,7 +42,11 @@ def dashboard(request):
 
     # Pass the image context to the template
     user_groups = request.session.get('user_groups', [])
-    return render(request, 'dashboard.html', {'image': image, 'user_groups': user_groups})
+    username = request.session.get('username')
+    user = CognitoUser.objects.filter(username=username)[0]
+    name = user.name
+    lastname = user.last_name
+    return render(request, 'dashboard.html', {'image': image, 'user_groups': user_groups, 'name': name})
 
 
 def carowner_videos(request):

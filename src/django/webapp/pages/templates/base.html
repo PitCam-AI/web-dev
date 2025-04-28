@@ -77,6 +77,13 @@
         <div class="row">
             <!-- Left Sidebar -->
             <nav class="col-md-2 sidebar">
+                <li class="nav-item mb-3 ps-3">
+                    <a href="{% url 'pages:dashboard' %}">
+                        <img src="{% static 'pages/pitcam_logo.png' %}" alt="Logo"
+                             class="img-fluid border rounded"
+                             style="max-width: 80px; background-color: white;">
+                    </a>
+                </li>
                 <ul class="nav flex-column">
                     {% if 'raceowner' in user_groups %}
                         <li class="nav-item">
