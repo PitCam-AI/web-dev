@@ -318,51 +318,69 @@
     }
 
     async function startTraining(raceId, raceName, numCars, carNames) {
-        console.log("Start Training Clicked!");
-        console.log("Race ID:", raceId);
-        console.log("Race Name:", raceName);
-        console.log("Number of Cars:", numCars);
-        console.log("Car Names:", carNames);
+    const btnId = `startTrainingBtn${raceId}`;
+    const button = document.getElementById(btnId);
 
-        const idToken = localStorage.getItem("id_token");
-        if (!idToken) {
-            alert("You must be logged in to start training.");
-            window.location.href = "/pages/login/";
-            return;
-        }
-
-        if (!confirm(`Start training for ${numCars} cars in ${raceName}?`)) {
-            return;
-        }
-
-        try {
-            const response = await fetch("/ml_integration/start-training/", {
-                method: "POST",
-                headers: {
-                    "Authorization": "Bearer " + idToken,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ 
-                    race_id: raceId, 
-                    race_name: raceName,
-                    num_cars: numCars, 
-                    car_names: carNames.split(',') 
-                })
-            });
-
-            const data = await response.json();
-            console.log("Response Data:", data);
-
-            if (response.ok) {
-                alert(data.message);
-            } else {
-                alert(`Error: ${data.error}`);
-            }
-        } catch (error) {
-            console.error("Error:", error);
-            alert("Failed to start training. Please try again.");
-        }
+    if (!button) {
+        console.warn(`Button with ID ${btnId} not found.`);
+        return;
     }
+
+    // Disable the button and change text
+    button.disabled = true;
+    button.classList.add('disabled');
+    button.textContent = 'Training...';
+
+    const idToken = localStorage.getItem("id_token");
+    if (!idToken) {
+        alert("You must be logged in to start training.");
+        window.location.href = "/pages/login/";
+        return;
+    }
+
+    if (!confirm(`Start training for ${numCars} cars in ${raceName}?`)) {
+        // Re-enable if user cancels
+        button.disabled = false;
+        button.classList.remove('disabled');
+        button.textContent = 'Start Training';
+        return;
+    }
+
+    try {
+        const response = await fetch("/ml_integration/start-training/", {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + idToken,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ 
+                race_id: raceId, 
+                race_name: raceName,
+                num_cars: numCars, 
+                car_names: carNames.split(',') 
+            })
+        });
+
+        const data = await response.json();
+        console.log("Response Data:", data);
+
+        if (response.ok) {
+            alert(data.message);
+        } else {
+            alert(`Error: ${data.error}`);
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        alert("Failed to start training. Please try again.");
+    } finally {
+        // Re-enable the button after a short delay
+        setTimeout(() => {
+            button.disabled = false;
+            button.classList.remove('disabled');
+            button.textContent = 'Start Training';
+        }, 5000); // 5-second delay
+    }
+}
 
 </script>
 {% endblock %}

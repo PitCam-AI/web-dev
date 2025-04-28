@@ -25,60 +25,74 @@ head, body{
             <input type="file" class="form-control" id="images" name="images" multiple required>
         </div>
 
-        <button type="submit" class="btn btn-primary">Add Car</button>
+        <button type="submit" class="btn btn-primary" id="add-car-button">Add Car</button>
     </form>
 
     <div id="response-message" class="alert mt-3" style="display: none;"></div>
 </div>
 
 <script>
-    document.getElementById('newcar-form').onsubmit = async function(event) {
-        event.preventDefault();
 
-        const formData = new FormData();
-        formData.append('name', document.getElementById('name').value);
-        const images = document.getElementById('images').files;
-        for (const image of images) {
-            formData.append('images', image);
-        }
+document.getElementById('newcar-form').onsubmit = async function(event) {
+    event.preventDefault();
 
-        const token = localStorage.getItem('id_token');
-        if (!token) {
-            alert("You must be logged in to add a new car.");
-            return;
-        }
+    const submitButton = document.getElementById('add-car-button');
+    submitButton.disabled = true;
+    submitButton.classList.add('disabled');
+    submitButton.textContent = 'Submitting...';
 
-        try {
-            const response = await fetch('/add-car/', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                }
-            });
+    const formData = new FormData();
+    formData.append('name', document.getElementById('name').value);
+    const images = document.getElementById('images').files;
+    for (const image of images) {
+        formData.append('images', image);
+    }
 
-            const result = await response.json();
-            let messageDiv = document.getElementById("response-message");
-            messageDiv.style.display = 'block';
-            
-            if (response.ok) {
-                messageDiv.className = "alert alert-success";
-                messageDiv.innerText = "Successfully added car and images!";
-            } else {
-                messageDiv.className = "alert alert-danger";
-                if (result.message) {
-                    messageDiv.innerText = result.message;
-                } else if (result.detail) { 
-                    // Handle generic DRF error messages
-                    messageDiv.innerText = result.detail;
-                } else {
-                    messageDiv.innerText = "Failed to add car. Please try again.";
-                }
-                // messageDiv.innerText = result.error || "Failed to add car.";
+    const token = localStorage.getItem('id_token');
+    if (!token) {
+        alert("You must be logged in to add a new car.");
+        submitButton.disabled = false;
+        submitButton.classList.remove('disabled');
+        submitButton.textContent = 'Submit';
+        return;
+    }
+
+    try {
+        const response = await fetch('/add-car/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Authorization': `Bearer ${token}`,
             }
-        } catch (error) {
-            console.error("Error:", error);
+        });
+
+        const result = await response.json();
+        let messageDiv = document.getElementById("response-message");
+        messageDiv.style.display = 'block';
+
+        if (response.ok) {
+            messageDiv.className = "alert alert-success";
+            messageDiv.innerText = "Successfully added car and images!";
+            // Optionally reset the form
+            document.getElementById('newcar-form').reset();
+        } else {
+            messageDiv.className = "alert alert-danger";
+            if (result.message) {
+                messageDiv.innerText = result.message;
+            } else if (result.detail) {
+                messageDiv.innerText = result.detail;
+            } else {
+                messageDiv.innerText = "Failed to add car. Please try again.";
+            }
         }
-    };
+    } catch (error) {
+        console.error("Error:", error);
+    } finally {
+        submitButton.disabled = false;
+        submitButton.classList.remove('disabled');
+        submitButton.textContent = 'Submit';
+    }
+};
+
 </script>
 {% endblock %}
